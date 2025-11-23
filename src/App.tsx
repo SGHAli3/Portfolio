@@ -5,7 +5,6 @@ import {
   Mail,
   ExternalLink,
   Award,
-  ArrowRight,
 } from "lucide-react";
 
 const App = () => {
@@ -14,36 +13,133 @@ const App = () => {
   const [showCreditsPopup, setShowCreditsPopup] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [activeCert, setActiveCert] = useState<string | null>(null);
+  const [activeExpProject, setActiveExpProject] = useState<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const projects = [
+  // Detailed project information for each experience role
+  const experienceProjects = [
     {
       id: 1,
-      title: "NACH Solutioning",
-      category: "QA Validation & Business Requirements",
-      description:
-        "Participated in the product team to validate business requirements and ensure the solution met specifications without conflicts before development.",
-      tags: ["Automation Testing", "Manual Testing", "Requirement Validation", "QA", "Business Analysis"],
+      role: "Senior QA Engineer",
+      period: "Aug 2024 – Present",
+      projects: [
+        {
+          name: "TPP (Third Party Provider) Testing",
+          description: "Comprehensive testing of Third Party Provider integrations under Open Finance UAE platform.",
+          responsibilities: [
+            "Designed test cases for account information and payment initiation APIs",
+            "Validated OAuth 2.0 authentication flows and consent management",
+            "Performed API contract testing using Postman collections",
+            "Executed security testing for data encryption and PII handling"
+          ],
+          tools: ["Postman", "JIRA", "SQL", "Git"]
+        },
+        {
+          name: "PFM (Personal Finance Management) QA",
+          description: "End-to-end quality assurance for Personal Finance Management features.",
+          responsibilities: [
+            "Tested transaction categorization and budget tracking features",
+            "Validated data aggregation from multiple financial institutions",
+            "Performed cross-browser and mobile app testing",
+            "Executed regression testing for new feature releases"
+          ],
+          tools: ["Playwright", "Appium", "PostgreSQL", "JIRA"]
+        },
+        {
+          name: "CFM (Cash Flow Management) Validation",
+          description: "Quality validation for Cash Flow Management and forecasting modules.",
+          responsibilities: [
+            "Validated cash flow prediction algorithms and reporting",
+            "Tested integration with banking APIs for real-time balance updates",
+            "Performed data accuracy testing using SQL queries",
+            "Coordinated UAT with fintech partners"
+          ],
+          tools: ["SQL", "Postman", "Excel", "JIRA"]
+        }
+      ]
     },
-
     {
       id: 2,
-      title: "NACH Integration",
-      category: "Integration & Core Payments",
-      description:
-        "Integrated NACH & UPI mandate solution with client LMS and Core Banking Systems, handling end‑to‑end testing and ensuring seamless onboarding.",
-      tags: ["Integration Testing", "NACH", "UPI", "NPCI", "PSP", "Automation"],
+      role: "QA Automation Engineer",
+      period: "Dec 2023 – Aug 2024",
+      projects: [
+        {
+          name: "UPI Autopay Automation Framework",
+          description: "Built comprehensive automation suite for UPI Autopay mandate lifecycle testing.",
+          responsibilities: [
+            "Developed 150+ Playwright test cases covering mandate creation, modification, and cancellation",
+            "Implemented API testing framework for NPCI integration validation",
+            "Created data-driven tests for multiple bank and PSP combinations",
+            "Reduced regression testing time by 30-40% per release cycle"
+          ],
+          tools: ["Playwright", "TypeScript", "Postman", "Git", "Jenkins"]
+        },
+        {
+          name: "NACH-UPI LMS Integration Testing",
+          description: "Led integration testing for NACH and UPI mandate solutions with client Loan Management Systems.",
+          responsibilities: [
+            "Executed integration testing for 8+ NBFCs, banks, and PSPs",
+            "Validated end-to-end mandate flows from LMS to NPCI",
+            "Performed reconciliation testing between LMS and payment gateway",
+            "Identified and reported 25+ critical production issues during UAT"
+          ],
+          tools: ["Postman", "DBeaver", "JIRA", "SQL"]
+        },
+        {
+          name: "Payment Gateway API Validation",
+          description: "Comprehensive API testing for payment gateway integrations.",
+          responsibilities: [
+            "Validated mandate registration, presentation, and status update APIs",
+            "Performed negative testing for error handling scenarios",
+            "Tested webhook notifications and callback mechanisms",
+            "Created automated API test suites in Postman"
+          ],
+          tools: ["Postman", "Newman", "Git", "JIRA"]
+        }
+      ]
     },
-
     {
       id: 3,
-      title: "Product Support",
-      category: "Product Operations & Support",
-      description:
-        "Provided product operation support, maintaining application quality and ensuring feature usability for clients across the platform.",
-      tags: ["Product Support", "Operations", "QA", "Customer Success"],
-    },
+      role: "QA Implementation Engineer",
+      period: "Mar 2022 – Dec 2023",
+      projects: [
+        {
+          name: "NACH Mandate Implementation",
+          description: "Manual testing and implementation support for NACH mandate solution across multiple banks.",
+          responsibilities: [
+            "Executed end-to-end testing for 6+ bank implementations",
+            "Validated NACH mandate registration, modification, and cancellation flows",
+            "Tested file-based processing (NACH input/output files)",
+            "Performed data validation using SQL queries on mandate databases"
+          ],
+          tools: ["SQL", "DBeaver", "Excel", "JIRA", "FileZilla"]
+        },
+        {
+          name: "NACH Collection Testing",
+          description: "Testing of NACH collection presentation and response file processing.",
+          responsibilities: [
+            "Validated debit presentation file generation and processing",
+            "Tested collection success/failure scenarios across different banks",
+            "Performed reconciliation testing between mandate and collection data",
+            "Executed UAT coordination with NBFC clients"
+          ],
+          tools: ["SQL", "Excel", "Putty", "JIRA"]
+        },
+        {
+          name: "Production Support & Defect Management",
+          description: "Production validation and issue resolution for banking clients.",
+          responsibilities: [
+            "Resolved 40+ critical production defects for NBFCs and banks",
+            "Performed root cause analysis using application logs and database queries",
+            "Coordinated with development team for hotfix deployments",
+            "Maintained test documentation and defect reports"
+          ],
+          tools: ["JIRA", "SQL", "Putty", "Excel"]
+        }
+      ]
+    }
   ];
+
 
   const skills = [
     "Manual Testing",
@@ -69,21 +165,37 @@ const App = () => {
     "Automated Visual Validation",
   ];
 
-  const tools = [
+  const qaTools = [
     "Playwright",
-    "putty",
-    "FileZilla",
     "Postman",
     "JIRA",
-    "GIT",
-    "DBeaver",
+    "Git",
     "Appium",
-    "Postgress,MSSSQL,ORACLE,MySQL",
+    "DBeaver",
+    "Putty",
+    "FileZilla",
+  ];
+
+  const databases = [
+    "PostgreSQL",
+    "MSSQL",
+    "Oracle",
+    "MySQL",
+  ];
+
+  const platforms = [
+    "Linux",
+    "Windows",
+    "Android",
+    "iOS",
+  ];
+
+  const additionalSkills = [
     "Figma",
     "Canva",
     "Adobe Photoshop",
-    "Adobe Premiere Pro",
-    "VN Editor"
+    "Premiere Pro",
+    "VN Editor",
   ];
 
   const certifications = [
@@ -106,13 +218,19 @@ const App = () => {
     if (!link) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg w-[90%] max-w-3xl p-4 relative">
+      <div
+        className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+        onClick={onClose}
+      >
+        <div
+          className="bg-white rounded-lg w-[90%] max-w-3xl p-4 relative"
+          onClick={(e) => e.stopPropagation()}
+        >
 
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-2 right-2 text-black text-xl"
+            className="absolute top-2 right-2 text-black text-xl hover:text-gray-700 transition-colors z-10"
           >
             ✖
           </button>
@@ -668,7 +786,6 @@ const App = () => {
         <div className="hidden md:flex gap-8">
           <a href="#about" className="nav-link text-gray-300 hover:text-white transition-colors">ABOUT</a>
           <a href="#experience" className="nav-link text-gray-300 hover:text-white transition-colors">EXPERIENCE</a>
-          <a href="#projects" className="nav-link text-gray-300 hover:text-white transition-colors">PROJECTS</a>
           <a href="#contact" className="nav-link text-gray-300 hover:text-white transition-colors">CONTACT</a>
         </div>
       </nav>
@@ -700,8 +817,7 @@ const App = () => {
           </h2>
 
           <p className="text-gray-400 text-lg md:text-xl max-w-2xl mt-8 leading-relaxed animate-fade-up" style={{ animationDelay: '0.3s' }}>
-            QA Engineer with <span className={`transition-all duration-500 ${isExpAnimating ? 'font-bold text-white text-2xl' : 'font-normal text-gray-400'}`}>{expYears}</span> years of experience in manual and automation testing.
-            Specializing in ensuring software quality through rigorous testing methodologies and automated solutions.
+            QA Engineer with <span className={`transition-all duration-500 ${isExpAnimating ? 'font-bold text-white text-2xl' : 'font-normal text-gray-400'}`}>{expYears}</span> years of experience in web, mobile, and API testing, mainly in fintech and payments. Skilled in test planning, functional and regression testing, API testing, and using tools like Playwright, Postman, and SQL to keep releases stable.
           </p>
 
           <div className="animate-fade-up flex flex-wrap gap-6 pt-10" style={{ animationDelay: "0.4s" }}>
@@ -846,15 +962,63 @@ const App = () => {
 
           <div className="mt-8">
             <p className="text-gray-500 text-sm tracking-[0.3em] uppercase mb-4">
-              Tools & Software
+              QA & Automation Tools
             </p>
             <div className="flex flex-wrap gap-3">
-              {tools.map((tool, idx) => (
+              {qaTools.map((tool, idx) => (
                 <span
                   key={idx}
                   className="px-5 py-2 border border-purple-800/50 bg-purple-500/10 hover:border-purple-600 transition-colors duration-300 text-sm text-purple-200"
                 >
                   {tool}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <p className="text-gray-500 text-sm tracking-[0.3em] uppercase mb-4">
+              Databases
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {databases.map((db, idx) => (
+                <span
+                  key={idx}
+                  className="px-5 py-2 border border-blue-800/50 bg-blue-500/10 hover:border-blue-600 transition-colors duration-300 text-sm text-blue-200"
+                >
+                  {db}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <p className="text-gray-500 text-sm tracking-[0.3em] uppercase mb-4">
+              Platforms
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {platforms.map((platform, idx) => (
+                <span
+                  key={idx}
+                  className="px-5 py-2 border border-cyan-800/50 bg-cyan-500/10 hover:border-cyan-600 transition-colors duration-300 text-sm text-cyan-200"
+                >
+                  {platform}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <p className="text-gray-500 text-sm tracking-[0.3em] uppercase mb-4">
+              Additional Skills
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {additionalSkills.map((skill, idx) => (
+                <span
+                  key={idx}
+                  className="px-5 py-2 border border-gray-800/50 bg-gray-500/10 hover:border-gray-600 transition-colors duration-300 text-sm text-gray-300"
+                >
+                  {skill}
                 </span>
               ))}
             </div>
@@ -905,12 +1069,12 @@ const App = () => {
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 gap-2">
                     <div>
                       <h3 className="text-xl font-light text-white mb-1">
-                        Sr. QA Analyst + Business Analyst
+                        Senior QA Engineer
                       </h3>
-                      <p className="text-gray-400 text-sm font-medium">Open Finance UAE</p>
+                      <p className="text-gray-400 text-sm font-medium">Open Finance – UAE</p>
                     </div>
                     <span className="text-sm text-gray-400 md:text-right whitespace-nowrap">
-                      Aug 2025 – Present
+                      Aug 2024 – Present
                     </span>
                   </div>
 
@@ -919,17 +1083,25 @@ const App = () => {
                   <ul className="space-y-2 text-gray-400 text-sm leading-relaxed">
                     <li className="flex items-start">
                       <span className="text-gray-500 mr-2">▹</span>
-                      <span>Working on TPP solution, PFM, and CFM under the new Open Finance platform.</span>
+                      <span>Designed and executed test plans for TPP, PFM, and CFM modules under the Open Finance platform, covering functional, API, and integration testing.</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-gray-500 mr-2">▹</span>
-                      <span>Dual role: Senior QA + BA for requirements, product flows, API testing, and functional design.</span>
+                      <span>Validated API contracts and data flows using Postman and SQL, ensuring compliance with Open Banking standards.</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-gray-500 mr-2">▹</span>
-                      <span>Coordinating with engineering, product, and fintech partners to ensure high-quality delivery.</span>
+                      <span>Collaborated with engineering and product teams to identify edge cases and ensure high-quality delivery across SIT, UAT, and production environments.</span>
                     </li>
                   </ul>
+
+                  <button
+                    onClick={() => setActiveExpProject(1)}
+                    className="mt-4 inline-flex items-center gap-2 px-4 py-2 border border-blue-500/50 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-500 transition-all duration-300 text-sm text-blue-300"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>View Projects</span>
+                  </button>
                 </div>
               </div>
 
@@ -942,12 +1114,12 @@ const App = () => {
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 gap-2">
                     <div>
                       <h3 className="text-xl font-light text-white mb-1">
-                        QA Automation Engineer / QA Lead
+                        QA Automation Engineer
                       </h3>
-                      <p className="text-gray-400 text-sm font-medium">ENACH - UPI Autopay</p>
+                      <p className="text-gray-400 text-sm font-medium">eNACH & UPI Autopay</p>
                     </div>
                     <span className="text-sm text-gray-400 md:text-right whitespace-nowrap">
-                      Dec 2023 – Aug 2025
+                      Dec 2023 – Aug 2024
                     </span>
                   </div>
 
@@ -956,17 +1128,25 @@ const App = () => {
                   <ul className="space-y-2 text-gray-400 text-sm leading-relaxed">
                     <li className="flex items-start">
                       <span className="text-gray-500 mr-2">▹</span>
-                      <span>Built and maintained automation suites for UPI Autopay for the eNACH module.</span>
+                      <span>Built and maintained 150+ Playwright test cases for UPI Autopay journeys, reducing manual regression time by 30–40% per release.</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-gray-500 mr-2">▹</span>
-                      <span>Acted as QA Lead for integrations with multiple NBFCs, Banks, and PSPs.</span>
+                      <span>Led QA for integrations with 8+ NBFCs, banks, and PSPs, executing API testing, data validation, and end-to-end mandate lifecycle testing.</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-gray-500 mr-2">▹</span>
-                      <span>Validated end-to-end flows across LMS/core systems, APIs, reconciliation, and mandate lifecycle.</span>
+                      <span>Validated end-to-end flows across LMS/core systems, APIs, reconciliation, and mandate lifecycle, catching 25+ critical production issues pre-release.</span>
                     </li>
                   </ul>
+
+                  <button
+                    onClick={() => setActiveExpProject(2)}
+                    className="mt-4 inline-flex items-center gap-2 px-4 py-2 border border-purple-500/50 bg-purple-500/10 hover:bg-purple-500/20 hover:border-purple-500 transition-all duration-300 text-sm text-purple-300"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>View Projects</span>
+                  </button>
                 </div>
               </div>
 
@@ -979,9 +1159,9 @@ const App = () => {
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 gap-2">
                     <div>
                       <h3 className="text-xl font-light text-white mb-1">
-                        QA Implementation & Support Engineer
+                        QA Implementation Engineer
                       </h3>
-                      <p className="text-gray-400 text-sm font-medium">NACH Mandate & Collections</p>
+                      <p className="text-gray-400 text-sm font-medium">NACH Mandates</p>
                     </div>
                     <span className="text-sm text-gray-400 md:text-right whitespace-nowrap">
                       Mar 2022 – Dec 2023
@@ -993,17 +1173,25 @@ const App = () => {
                   <ul className="space-y-2 text-gray-400 text-sm leading-relaxed">
                     <li className="flex items-start">
                       <span className="text-gray-500 mr-2">▹</span>
-                      <span>Managed NACH application implementation and manual testing for ~6+ banks.</span>
+                      <span>Executed NACH mandate and collection testing for 6+ banks, covering end-to-end mandate lifecycle and file processing across SIT/UAT/Production.</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-gray-500 mr-2">▹</span>
-                      <span>Handled UAT, production support, and issue resolution for NBFCs and banking clients.</span>
+                      <span>Performed UAT coordination and production validation testing, resolving 40+ critical defects for NBFCs and banking clients.</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-gray-500 mr-2">▹</span>
-                      <span>Validated mandate and collection flows, file processing, and reports across environments.</span>
+                      <span>Validated mandate registration, presentation, and collection flows using SQL queries and API testing, ensuring data accuracy across environments.</span>
                     </li>
                   </ul>
+
+                  <button
+                    onClick={() => setActiveExpProject(3)}
+                    className="mt-4 inline-flex items-center gap-2 px-4 py-2 border border-green-500/50 bg-green-500/10 hover:bg-green-500/20 hover:border-green-500 transition-all duration-300 text-sm text-green-300"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>View Projects</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -1014,64 +1202,7 @@ const App = () => {
         </div>
       </section>
 
-      <section id="projects" className="min-h-0 md:min-h-screen px-6 md:px-8 py-12 md:py-24 relative z-10">
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="mb-16">
-            <p className="text-gray-500 text-sm tracking-[0.3em] uppercase mb-6">
-              Selected Work
-            </p>
-            <h2 className="text-4xl md:text-5xl font-light">Featured QA Projects</h2>
-          </div>
 
-          <div className="space-y-1">
-            {projects.map((project, idx) => (
-              <div
-                key={project.id}
-                className="group border-t border-gray-900 hover:bg-white/5 transition-colors duration-500"
-              >
-                <div className="py-8 grid md:grid-cols-12 gap-8 items-center">
-                  <div className="md:col-span-1">
-                    <span className="text-gray-600 text-sm">0{idx + 1}</span>
-                  </div>
-
-                  <div className="md:col-span-5">
-                    <h3 className="text-2xl md:text-3xl font-light mb-2 group-hover:translate-x-2 transition-transform duration-500">
-                      {project.title}
-                    </h3>
-                    <p className="text-gray-500 text-sm">{project.category}</p>
-                  </div>
-
-                  <div className="md:col-span-4">
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      {project.description}
-                    </p>
-                  </div>
-
-                  <div className="md:col-span-2 flex justify-end">
-                    <div className="flex items-center gap-2 text-gray-500 group-hover:text-white transition-colors duration-300">
-                      <span className="text-sm">View details</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pb-8">
-                  <div className="flex flex-wrap gap-2">
-                    {project.tags.map((tag, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1 bg-white/5 text-xs border border-gray-800 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <section id="contact" className="min-h-0 md:min-h-screen flex items-center justify-center px-6 md:px-8 py-12 md:py-24 relative z-10">
         <div className="max-w-4xl w-full text-center">
@@ -1206,6 +1337,95 @@ const App = () => {
         link={activeCert}
         onClose={() => setActiveCert(null)}
       />
+
+      {/* Experience Projects Modal */}
+      {activeExpProject && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto"
+          onClick={() => setActiveExpProject(null)}
+        >
+          <div
+            className="bg-zinc-950 border border-zinc-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto my-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-zinc-950 border-b border-zinc-800 p-6 flex justify-between items-start z-10">
+              <div>
+                <h3 className="text-2xl font-light text-white mb-2">
+                  {experienceProjects.find(exp => exp.id === activeExpProject)?.role}
+                </h3>
+                <p className="text-sm text-gray-400">
+                  {experienceProjects.find(exp => exp.id === activeExpProject)?.period}
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveExpProject(null)}
+                className="text-gray-500 hover:text-white transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-8">
+              {experienceProjects.find(exp => exp.id === activeExpProject)?.projects.map((project, idx) => (
+                <div key={idx} className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-700 transition-colors">
+                  {/* Project Header */}
+                  <div className="mb-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="text-xl font-medium text-white">{project.name}</h4>
+                      <span className="text-xs text-gray-500 bg-zinc-900 px-3 py-1 rounded-full">
+                        Project {idx + 1}
+                      </span>
+                    </div>
+                    <p className="text-gray-400 text-sm leading-relaxed">{project.description}</p>
+                  </div>
+
+                  {/* Responsibilities */}
+                  <div className="mb-4">
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">Key Responsibilities</p>
+                    <ul className="space-y-2">
+                      {project.responsibilities.map((resp, i) => (
+                        <li key={i} className="flex items-start text-sm text-gray-400">
+                          <span className="text-blue-500 mr-2 mt-1">▹</span>
+                          <span>{resp}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Tools Used */}
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">Tools & Technologies</p>
+                    <div className="flex flex-wrap gap-2">
+                      {project.tools.map((tool, i) => (
+                        <span
+                          key={i}
+                          className="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-full text-xs text-gray-300"
+                        >
+                          {tool}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-zinc-950 border-t border-zinc-800 p-6">
+              <button
+                onClick={() => setActiveExpProject(null)}
+                className="w-full px-6 py-3 border border-zinc-700 hover:border-zinc-600 hover:bg-zinc-900 transition-all duration-300 text-sm text-gray-300"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
