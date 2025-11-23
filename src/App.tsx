@@ -217,10 +217,22 @@ const App = () => {
   const CertificateModal = ({ link, onClose }: CertificateModalProps) => {
     if (!link) return null;
 
+    // ESC key handler
+    useEffect(() => {
+      const handleEsc = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose();
+      };
+      window.addEventListener('keydown', handleEsc);
+      return () => window.removeEventListener('keydown', handleEsc);
+    }, [onClose]);
+
     return (
       <div
         className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
         onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cert-modal-title"
       >
         <div
           className="bg-white rounded-lg w-[90%] max-w-3xl p-4 relative"
@@ -231,6 +243,7 @@ const App = () => {
           <button
             onClick={onClose}
             className="absolute top-2 right-2 text-black text-xl hover:text-gray-700 transition-colors z-10"
+            aria-label="Close certificate modal"
           >
             ✖
           </button>
@@ -240,12 +253,34 @@ const App = () => {
             src={link}
             className="w-full h-[500px] rounded"
             allow="fullscreen"
+            title="Certificate preview"
           ></iframe>
         </div>
       </div>
     );
   };
 
+  // Body scroll lock when modals are open
+  useEffect(() => {
+    if (activeCert || activeExpProject || showCreditsPopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [activeCert, activeExpProject, showCreditsPopup]);
+
+  // ESC key handler for Experience Projects Modal
+  useEffect(() => {
+    if (!activeExpProject) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setActiveExpProject(null);
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [activeExpProject]);
 
 
   useEffect(() => {
@@ -844,6 +879,7 @@ const App = () => {
                 target={social.href.startsWith("http") ? "_blank" : undefined}
                 rel="noreferrer"
                 className="nav-link flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-300 text-xs"
+                aria-label={`Visit my ${social.label}`}
               >
                 {social.icon}
                 <span className="tracking-[0.22em] uppercase text-[11px]">
@@ -1343,6 +1379,9 @@ const App = () => {
         <div
           className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto"
           onClick={() => setActiveExpProject(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="exp-modal-title"
         >
           <div
             className="bg-zinc-950 border border-zinc-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto my-8"
@@ -1351,7 +1390,7 @@ const App = () => {
             {/* Modal Header */}
             <div className="sticky top-0 bg-zinc-950 border-b border-zinc-800 p-6 flex justify-between items-start z-10">
               <div>
-                <h3 className="text-2xl font-light text-white mb-2">
+                <h3 id="exp-modal-title" className="text-2xl font-light text-white mb-2">
                   {experienceProjects.find(exp => exp.id === activeExpProject)?.role}
                 </h3>
                 <p className="text-sm text-gray-400">
@@ -1361,6 +1400,7 @@ const App = () => {
               <button
                 onClick={() => setActiveExpProject(null)}
                 className="text-gray-500 hover:text-white transition-colors"
+                aria-label="Close projects modal"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
