@@ -84,3 +84,94 @@ body {
 a {
   text-decoration: none;
 }
+
+
+/* Shatter & Void Animations */
+@keyframes violentShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10%, 30%, 50%, 70%, 90% { transform: translate(-5px, 5px) rotate(-2deg); }
+  20%, 40%, 60%, 80% { transform: translate(5px, -5px) rotate(2deg); }
+}
+
+@keyframes shardExplode {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) rotate(var(--r)) scale(0.5); opacity: 0; }
+}
+
+@keyframes voidExpand {
+  0% { transform: scale(0); opacity: 0; }
+  10% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(50); opacity: 1; }
+}
+
+@keyframes shockwaveExpand {
+  0% { transform: scale(0); opacity: 1; border-width: 100px; }
+  100% { transform: scale(5); opacity: 0; border-width: 0px; }
+}
+
+@keyframes flashBang {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes voidPulse {
+  0% { transform: scale(1); box-shadow: 0 0 50px rgba(255, 255, 255, 0.3); }
+  50% { transform: scale(1.05); box-shadow: 0 0 80px rgba(255, 255, 255, 0.5); }
+  100% { transform: scale(1); box-shadow: 0 0 50px rgba(255, 255, 255, 0.3); }
+}
+
+.animate-shake {
+  animation: violentShake 0.5s linear infinite;
+}
+
+.animate-shard {
+  animation: shardExplode 0.8s ease-out forwards;
+}
+
+.animate-void {
+  animation: voidExpand 4s ease-in forwards;
+  animation-delay: 0.6s;
+}
+
+.animate-shockwave {
+  animation: shockwaveExpand 0.8s ease-out forwards;
+  animation-delay: 0.5s;
+}
+
+.animate-flash {
+  animation: flashBang 0.3s ease-out forwards;
+  animation-delay: 0.5s;
+}
+
+.animate-pulse {
+  animation: voidPulse 4s ease-in-out infinite;
+}
+
+/* General Animations */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out forwards;
+}

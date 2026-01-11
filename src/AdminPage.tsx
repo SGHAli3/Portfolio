@@ -3,29 +3,42 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { SiteConfig } from "./siteConfig";
 import { loadConfig, saveConfig } from "./siteConfig";
+import { useAuth } from "./AuthContext";
 
 const AdminPage: React.FC = () => {
   const [form, setForm] = useState<SiteConfig>(loadConfig);
   const [saved, setSaved] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/admin-login");
+    }
+  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     setForm(loadConfig());
   }, []);
 
+  const handleLogout = () => {
+    logout();
+    navigate("/admin-login");
+  };
+
   const updateField =
     (field: keyof SiteConfig) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setForm((prev) => ({ ...prev, [field]: e.target.value }));
-      setSaved(false);
-    };
+      (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setForm((prev) => ({ ...prev, [field]: e.target.value }));
+        setSaved(false);
+      };
 
   const toggleBoolField =
     (field: keyof SiteConfig) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setForm((prev) => ({ ...prev, [field]: e.target.checked }));
-      setSaved(false);
-    };
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        setForm((prev) => ({ ...prev, [field]: e.target.checked }));
+        setSaved(false);
+      };
 
   const handleSave = () => {
     saveConfig(form);
@@ -40,7 +53,16 @@ const AdminPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">
       <div className="max-w-6xl w-full p-6 md:p-8">
-        <h1 className="text-2xl font-light mb-2">Admin - Profile &amp; Content</h1>
+        <div className="flex justify-between items-center mb-2">
+          <h1 className="text-2xl font-light">Admin - Profile &amp; Content</h1>
+          <button
+            onClick={handleLogout}
+            className="text-xs uppercase tracking-widest text-zinc-500 hover:text-red-500 transition-colors"
+            title="End authorized session"
+          >
+            End Session (Logout)
+          </button>
+        </div>
         <p className="text-gray-500 text-xs mb-6">
           Left: live preview. Right: edit fields. Save to update localStorage. Then you can go back
           to the portfolio.
@@ -297,11 +319,10 @@ const AdminPage: React.FC = () => {
                 type="button"
                 disabled={!saved}
                 onClick={() => navigate("/")}
-                className={`px-6 py-2 text-sm transition-all duration-300 border ${
-                  saved
+                className={`px-6 py-2 text-sm transition-all duration-300 border ${saved
                     ? "border-emerald-400 text-emerald-300 hover:bg-emerald-400 hover:text-black"
                     : "border-zinc-700 text-zinc-600 cursor-not-allowed"
-                }`}
+                  }`}
               >
                 Go to Portfolio
               </button>
